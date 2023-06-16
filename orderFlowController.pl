@@ -14,7 +14,7 @@ criarIDPedido(ID):- random_between(1, 10, Numero),
 
 criarIDPedido(ID):- write('Já tem'), 
                     criarIDPedido(ID).
-
+        
 cardapio :- write('1. Americano................R$3,00'), nl,
             write('2. Cappuccino...............R$2,00'), nl,
             write('3. Double Expresso..........R$4,00'), nl,
@@ -23,20 +23,30 @@ cardapio :- write('1. Americano................R$3,00'), nl,
             write('6. Mint chocolate...........R$6,50'), nl,
             write('7. Expresso.................R$8,00').
 
+obterNumeroDoItemEQuantidade([I, Q | _], I, Q). 
 
+calcularPrecoEEsperaTotal([], PTotal, ETotal, PTotal, ETotal).
+
+calcularPrecoEEsperaTotal([ItemN|Restante], PTotalAux, ETotalAux, PTotal, ETotal) :-  obterNumeroDoItemEQuantidade(ItemN, NumeroItem, Quantidade),
+                                                                                      item(NumeroItem, Preco, Espera),
+                                                                                      AuxP is PTotalAux + Preco * Quantidade,
+                                                                                      AuxE is ETotalAux + Espera * Quantidade,
+                                                                                      calcularPrecoEEsperaTotal(Restante, AuxP, AuxE, PTotal, ETotal), !.
+
+
+calcularPrecoEEsperaTotal(Itens, PTotal, ETotal) :- calcularPrecoEEsperaTotal(Itens, 0, 0, PTotal, ETotal).
+                                                                
 fazerPedido(Espera, ID) :-  findall(pedido(X,Y), pedido(X,Y), Pedidos),
-                            write(Pedidos),
-                            length(Pedidos, Quantidade),
-                            not(Quantidade =:= 2),
-                            Total = 0,
-                            write('Numero do item do cardapio: '), nl,
-                            read(Item), nl,
-                            write('Quantidade: '), nl,
-                            read(Quantidade),
-                            item(Item, Preco, Espera), !.
+                            write(Pedidos), nl,
+                            length(Pedidos, Tamanho),
+                            Tamanho =< 10,
+                            write('Insira seu pedido em uma lista de listas: '), nl,
+                            write('[[< Numero do item >, < Quantidade >], ...]'), nl,
+                            read(Itens), nl, 
+                            calcularPrecoEEsperaTotal(Itens, PTotal, Espera),
                             criarIDPedido(ID),
-                            asserta(pedido(ID, ))
+                            asserta(pedido(ID, PTotal)), !.
 
-fazerPedido(Espera, ID) :- write('Temos muitos pedidos em andamento, volte mais tarde...').
+fazerPedido(_, _) :- write('Temos muitos pedidos em andamento, volte mais tarde...').
                             
                             
