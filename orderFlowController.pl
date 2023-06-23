@@ -1,15 +1,17 @@
+:- consult('filaPrioridades.pl').
+
 :- dynamic pedido/2.
 :- dynamic notificacaoAgendada/3.
 
 /* =============================== ITENS DO CARDÁPIO =============================== */
 
-item(1, 3.0, 1).
-item(2, 2.0, 2).
-item(3, 4.0, 3).
-item(4, 3.0, 1).
-item(5, 5.0, 2).
-item(6, 6.50, 2).
-item(7, 8.0, 3).
+item(1, 3.0, 60).
+item(2, 2.0, 120).
+item(3, 4.0, 180).
+item(4, 3.0, 60).
+item(5, 5.0, 120).
+item(6, 6.50, 120).
+item(7, 8.0, 180).
 
 /* =========================== REGRAS E FATOS AUXILIARES =========================== */
 
@@ -91,8 +93,13 @@ fazerPedido(Espera, ID) :-  findall(pedido(X,Y), pedido(X,Y), Pedidos),
                             write('Insira seu pedido em uma lista de listas: '), nl,
                             write('[[< Numero do item >, < Quantidade >], ...]'), nl,
                             read(Itens), nl, 
+                            write('Prioridade? [true/false]: '), nl,
+                            read(Prioridade), nl, 
                             calcularPrecoEEsperaTotal(Itens, PTotal, Espera),
                             criarIDPedido(ID),
-                            asserta(pedido(ID, PTotal)), !.
+                            adicionar_pedido(ID, PTotal, Prioridade),
+                            % verificarEntrada(ID),
+                            agendarNotificacao(Espera, ID), !.
+                            % asserta(pedido(ID, PTotal)), !.
 
 fazerPedido(_, _) :- write('Temos muitos pedidos em andamento, volte mais tarde...').                            
