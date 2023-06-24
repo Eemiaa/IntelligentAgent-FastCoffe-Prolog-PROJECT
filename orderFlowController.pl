@@ -1,4 +1,4 @@
-:- consult('teste.pl').
+:- consult('filaPrioridades.pl').
 :- dynamic pedido/5.
 :- dynamic notificacaoAgendada/3.
 
@@ -74,7 +74,7 @@ agendarNotificacao(Segundos, ID) :-
     fila_prioridades(Fila),
     buscarPedidoPeloID(Fila, ID, _, Itens),
     criarMensagem(Itens, Mensagem),
-    format(string(Comando), "sleep ~w && echo '\nO pedido ~w está pronto: \n ~w' > /dev/pts/1 & echo $! > pid.txt", [Segundos, ID, Mensagem]),
+    format(string(Comando), "sleep ~w && DISPLAY=:0 notify-send 'O pedido ~w está pronto: \n ~w' & echo $! > pid.txt", [Segundos, ID, Mensagem]),
     shell(Comando),
     lerPid(PID),
     obterTempoAtualEmSegundos(TempoAtual),
@@ -106,7 +106,7 @@ cardapio :- findall(item(Numero, Preco, _, Descricao), item(Numero, Preco, _, De
 
 mostrarCardapio([]) :-  write('\u001b[45m =======================================================\u001b[m'), nl, !.
 mostrarCardapio([item(Numero, Preco, _, Descricao) | Resto]) :- 
-    format('~w. ~w....................~w', [Numero, Descricao, Preco]), nl,
+    format('~w. ~w....................R$~w', [Numero, Descricao, Preco]), nl,
     mostrarCardapio(Resto).
 
                                                                 
