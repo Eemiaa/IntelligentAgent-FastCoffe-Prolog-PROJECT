@@ -1,8 +1,9 @@
 :- use_module(library(thread)).
 :- use_module(library(process)).
 :- consult('filaPrioridades.pl').
-:- dynamic pedidoPronto/2.
+:- dynamic pedidoPronto/4.
 :- dynamic notificacaoAgendada/3.
+:- dynamic contPedidosProntos/1.
 
 /* =============================== ITENS DO CARDAPIO =============================== */
 
@@ -17,6 +18,8 @@ item(7, 8.0, 3, 'Expresso').
 /* =========================== REGRAS E FATOS AUXILIARES =========================== */
 
 /* *************************** Gerencia de Pedidos ********************************* */
+contPedidosProntos(0).
+
 
 criarMensagem([], ''). 
 criarMensagem([ Item ], Mensagem) :- obterNumeroDoItemEQuantidade(Item, I, Q),
@@ -29,8 +32,8 @@ criarMensagem([ Item | Resto ], Mensagem) :-
     atomic_list_concat([Q, ' ', Nome, ', ', MensagemResto], Mensagem).
 
 
-buscarPedidoPeloID([pedido(ID, Preco, _, _, Itens, Espera) | _], ID, Preco, Itens, Espera) :- !.
-buscarPedidoPeloID([pedido(_, _, _, _, _, _) | Resto], ID, Preco, Itens, Espera) :- buscarPedidoPeloID(Resto, ID, Preco, Itens, Espera).
+buscarPedidoPeloID([pedido(ID, Preco, Prioridade, _, Itens, Espera) | _], ID, Preco, Prioridade, Itens, Espera) :- !.
+buscarPedidoPeloID([pedido(_, _, _, _, _, _) | Resto], ID, Preco, Prioridade, Itens, Espera) :- buscarPedidoPeloID(Resto, ID, Preco, Prioridade, Itens, Espera).
 
 
 obterNumeroDoItemEQuantidade([I, Q | _], I, Q). 
@@ -39,7 +42,8 @@ obterNumeroDoItemEQuantidade([I, Q | _], I, Q).
 criarIDPedido(ID):- 
     random_between(1, 10, Numero),
     fila_prioridades(Fila),
-    not(buscarPedidoPeloID(Fila, Numero, _, _, _)),
+    not(buscarPedidoPeloID(Fila, Numero, _, _, _, _)),
+    not(pedidoPronto(Numero, _, _, _)),
     ID = Numero, !.
 
 
@@ -68,7 +72,7 @@ obterEsperasDosPedidosAFrente(ID, SomatorioDasEsperas) :- fila_prioridades(Fila)
 obterEsperasDosPedidosAFrente([pedido(ID, _, _, _, _, _) | _], ID, SomatorioDasEsperas, SomatorioDasEsperas) :- !.
 obterEsperasDosPedidosAFrente([pedido(DiffID, _, _, _, _, _) | Resto], ID, SomaAux, SomatorioDasEsperas) :- 
         fila_prioridades(Fila),
-        buscarPedidoPeloID(Fila, DiffID, _, _, Espera),
+        buscarPedidoPeloID(Fila, DiffID, _, _, _, Espera),
         NewSomaAux is SomaAux + Espera,
         obterEsperasDosPedidosAFrente(Resto, ID, NewSomaAux, SomatorioDasEsperas).
                                                       
@@ -102,7 +106,7 @@ lerPid(PID) :- open('pid.txt', read, Stream),
 
 agendarNotificacao(Segundos, ID) :-
     fila_prioridades(Fila),
-    buscarPedidoPeloID(Fila, ID, _, Itens, _),
+    buscarPedidoPeloID(Fila, ID, _, _, Itens, _),
     criarMensagem(Itens, Mensagem),
     format(string(Comando), "sleep ~w && DISPLAY=:0 notify-send 'O pedido ~w está pronto: ~w' & echo $! > pid.txt", [Segundos, ID, Mensagem]),
     shell(Comando),
@@ -130,6 +134,27 @@ adiarNotificacao(MaisSegundos, ID) :-
     agendarNotificacao(NovosSegundos, ID), !.
 
 
+gerenciarStarvation(Prioridade) :- 
+        Prioridade == true,
+        retract(contPedidosProntos(CPP)),
+        CPP < 2,
+        NewCPP is CPP + 1,
+        assertz(contPedidosProntos(NewCPP)).
+
+
+gerenciarStarvation(Prioridade) :-
+        Prioridade == false,
+        !.
+
+
+gerenciarStarvation(_) :- 
+        assertz(contPedidosProntos(0)),
+        pegar_ultimo_false_da_fila(IDUltimoFalse),
+        alterar_prioridade(IDUltimoFalse, true),
+        fila_prioridades(Fila),
+        buscarPedidoPeloID(Fila, IDUltimoFalse, _, _, _, Espera),
+        adiarEsperasDosPedidosDeTras(Fila, IDUltimoFalse, Espera).
+
 
 monitorarProcesso(PID, IDdoPedido) :-
     thread_create(repetirVerificacao(PID, IDdoPedido), _, [detached(true)]).
@@ -142,8 +167,9 @@ repetirVerificacao(PID, ID) :-
             fail
         ;  !,
             fila_prioridades(Fila),
-            buscarPedidoPeloID(Fila, ID, Preco, _, _),
-            assertz(pedidoPronto(ID,Preco)),
+            buscarPedidoPeloID(Fila, ID, Preco, Prioridade, _, Espera),
+            assertz(pedidoPronto(ID,Preco,Prioridade,Espera)),
+            gerenciarStarvation(Prioridade),
             retract(notificacaoAgendada(_, ID, _)),
             remover_pedido(ID)
     ).
@@ -170,7 +196,10 @@ mostrarCardapio([item(Numero, Preco, _, Descricao) | Resto]) :-
                                                                 
 fazerPedido(PTotal, ID) :-  
     fila_prioridades(Fila),
-    length(Fila, Tamanho),
+    length(Fila, Tamanho1),
+    findall(pedidoPronto(ID,Preco,Prioridade,Espera), pedidoPronto(ID,Preco,Prioridade,Espera), BagProntos),
+    length(BagProntos, Tamanho2),
+    Tamanho is Tamanho1 + Tamanho2,
     Tamanho < 10,
     write('Insira seu pedido em uma lista de listas: '), nl,
     write('[[< Numero do item >, < Quantidade >], ...]'), nl,
@@ -191,12 +220,12 @@ fazerPedido(PTotal, ID) :-
 fazerPedido(_, _) :- write('Temos muitos pedidos em andamento, volte mais tarde...').                            
 
 
-verStatusDoPedido(ID) :- pedidoPronto(ID, Preco),
+verStatusDoPedido(ID) :- pedidoPronto(ID, Preco, _, _),
                          format('O Pedido ~w já está pronto. O valor total deu R$~w', [ID, Preco]), !.
 
 
 verStatusDoPedido(ID) :- fila_prioridades(Fila),
-                         buscarPedidoPeloID(Fila, ID, _, _, _),
+                         buscarPedidoPeloID(Fila, ID, _, _, _, _),
                          format('O Pedido ~w ainda não está pronto.', [ID]), !.
 
                         
@@ -205,6 +234,5 @@ verStatusDoPedido(_) :- write('Pedido Inexistente').
 cancelarPedido(ID) :- cancelarNotificacao(ID),
                       remover_pedido(ID).
 
-
 pegarPedido(ID) :- /* recebaPagamento(ID) → Regra da Syanne */
-        retract(pedidoPronto(ID, _)). 
+        retract(pedidoPronto(ID, _, _, _)). 
