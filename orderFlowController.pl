@@ -4,6 +4,7 @@
 :- dynamic pedidoPronto/4.
 :- dynamic notificacaoAgendada/3.
 :- dynamic contPedidosProntos/1.
+:- dynamic idDoVerificador/2.
 
 /* =============================== ITENS DO CARDAPIO =============================== */
 
@@ -119,6 +120,8 @@ agendarNotificacao(Segundos, ID) :-
 
 
 cancelarNotificacao(ID) :-
+    retract(idDoVerificador(ID, IDVerificador)),
+    thread_signal(IDVerificador, thread_exit(_)),
     retract(notificacaoAgendada(PID, ID, _)),
     format(string(Comando), 'kill ~w', [PID]),
     shell(Comando).
@@ -157,7 +160,9 @@ gerenciarStarvation(_) :-
 
 
 monitorarProcesso(PID, IDdoPedido) :-
-    thread_create(repetirVerificacao(PID, IDdoPedido), _, [detached(true)]).
+    thread_create(repetirVerificacao(PID, IDdoPedido), IDVerificador, [detached(true)]),
+    format('PID da thread: ~w', [IDVerificador]),
+    asserta(idDoVerificador(IDdoPedido, IDVerificador)).
     
 repetirVerificacao(PID, ID) :-
     repeat,
