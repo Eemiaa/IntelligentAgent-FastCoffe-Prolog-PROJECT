@@ -8,7 +8,7 @@ tesouro(0).
  
 % preco/2
 % preco( nome_produto, preco_numérico )
-preco(maça_doce, 2.50).
+preco(maca_doce, 2.50).
 preco(batata_frita, 3.5).
 preco(latte, 15.50).
  
@@ -17,9 +17,10 @@ preco(latte, 15.50).
 % Parâmetros:
 %     ListaProdutos: Lista dos produtos comprados pelo cliente.
 %     Recebimento: O quanto o caixa recebeu do cliente.
-realizar_compra(ListaProdutos, Recebimento) :-
-    valor_total_pedido(ListaProdutos, ValorTotal),
-    fornecer_recibo(ListaProdutos, Recebimento),
+realizar_compra(ID, Recebimento) :-
+    pedidoPronto(ID, ValorTotal, _, _, _),
+%    valor_total_pedido(ListaProdutos, ValorTotal),
+    fornecer_recibo(ID, Recebimento),
     adicionar_tesouro(ValorTotal), !.
  
 % valor_total_pedido/2
@@ -54,12 +55,14 @@ calcular_item([], NewTotal, NewTotal) :- !.
 % Parâmetros:
 %     ListaProdutos: Lista com os produtos do cliente
 %     Recebimento: Quanto o caixa recebeu do cliente.
-fornecer_recibo(ListaProdutos, Recebimento) :-
-    valor_total_pedido(ListaProdutos, ValorTotal),
-    calcular_troco(ListaProdutos, Recebimento, Troco),
+fornecer_recibo(ID, Recebimento) :-
+    pedidoPronto(ID, ValorTotal, _, _, _),
+%    valor_total_pedido(ListaProdutos, ValorTotal),
+    calcular_troco(ID, Recebimento, Troco),
     Recebimento > ValorTotal,
-    format("--- Fast Cofee (TM) ---\n"),
-    imprimir_produto_recibo(ListaProdutos),
+    format("--- Fast Coffee (TM) ---\n"),
+    pedidoPronto(ID, _, _, Itens, _),
+    imprimir_produto_recibo(Itens),
     write("-----------------------\n"),
     format("Total Pedido ~15|: ~2f\n", [ValorTotal]),
     format("Troco ~15|: ~2f\n", [Troco]),
@@ -73,17 +76,20 @@ fornecer_recibo(ListaProdutos, Recebimento) :-
 %     Recebimento - Quantia recebida pelo cliente
 % Retorna:
 %     Troco - O troco calculado
-calcular_troco(ListaProdutos, Recebimento, Troco) :-
-    valor_total_pedido(ListaProdutos, ValorTotal),
+calcular_troco(ID, Recebimento, Troco) :-
+    pedidoPronto(ID, ValorTotal, _, _, _),
+%    valor_total_pedido(ListaProdutos, ValorTotal),
     Troco is Recebimento - ValorTotal, !.
  
 % imprimir_produto_recibo/1
 % Imprime um produto do recibo, atravessando a lista de produtos.
 % Parâmetros:
 %     ListaProdutos: Todos os produtos.
-imprimir_produto_recibo([Item | RestoLista]) :-
-    preco(Item, ValorItem),
-    format("~w~15| : ~2f~5|~n", [Item, ValorItem]),
+imprimir_produto_recibo([[Numero, Quantidade] | RestoLista]) :-
+    item(Numero, Preco, _, Item),
+%   preco(Item, Preco),
+    ValorItemTotal is Preco * Quantidade,
+    format("~w~2 ~w~15| : ~2f~5|~n", [Quantidade, Item, ValorItemTotal]),
     imprimir_produto_recibo(RestoLista).
  
 imprimir_produto_recibo([]) :- !.
