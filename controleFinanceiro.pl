@@ -1,12 +1,8 @@
 % Fatos
 :- dynamic receita_diaria/2.
 :- dynamic despesa_diaria/2.
-:- dynamic pedido/2.
 :- dynamic receita/3.
 :- dynamic despesa/2.
-
-pedido(1,10).
-pedido(2,20).
 
 % Regras
 % retorna a data formatada
@@ -34,7 +30,7 @@ totalDespesas:-
                     format('Total de despesas em ~w : R$~w .',[Data,Valor]).
 
 % Recebe como parâmetro o ID do pedido e registra seu valor como receita.
-recebaPagamento(Id) :-      pedido(Id,Valor),
+recebaPagamento(Id) :-      pedidoPronto(Id, Valor, _, _, _),
                             data(Data,DateTime),
                             assertz(receita(DateTime,Valor,Id)),
                             receita_diaria(Data,ReceitaAntiga),
