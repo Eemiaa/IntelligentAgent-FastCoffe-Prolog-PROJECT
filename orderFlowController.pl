@@ -198,7 +198,7 @@ cardapio :- findall(itemCardapio(Numero, Preco, _, Descricao), itemCardapio(Nume
 
 mostrarCardapio([]) :-  write('\u001b[45m =======================================================\u001b[m'), nl, !.
 mostrarCardapio([itemCardapio(Numero, Preco, _, Descricao) | Resto]) :- 
-    format('\u001b[44m~w~2|. ~|~w~47+R$~2f\u001b[m', [Numero, Descricao, Preco]), nl,
+    format('\u001b[44m~w~2|. ~|~w~46+R$~2f\u001b[m', [Numero, Descricao, Preco]), nl,
     mostrarCardapio(Resto).
 
                                                                 
