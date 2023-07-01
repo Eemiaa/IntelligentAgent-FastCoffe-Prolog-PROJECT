@@ -60,7 +60,7 @@ fornecer_recibo(ID, Recebimento) :-
 %    valor_total_pedido(ListaProdutos, ValorTotal),
     calcular_troco(ID, Recebimento, Troco),
     Recebimento > ValorTotal,
-    format("--- Fast Coffee (TM) ---\n"),
+    format("--- Fast Cofee (TM) ---\n"),
     pedidoPronto(ID, _, _, Itens, _),
     imprimir_produto_recibo(Itens),
     write("-----------------------\n"),
@@ -86,10 +86,10 @@ calcular_troco(ID, Recebimento, Troco) :-
 % Parâmetros:
 %     ListaProdutos: Todos os produtos.
 imprimir_produto_recibo([[Numero, Quantidade] | RestoLista]) :-
-    item(Numero, Preco, _, Item),
+    itemCardapio(Numero, Preco, _, Item),
 %   preco(Item, Preco),
     ValorItemTotal is Preco * Quantidade,
-    format("~w~2 ~w~15| : ~2f~5|~n", [Quantidade, Item, ValorItemTotal]),
+    format("~w ~w~15| : ~2f~5|~n", [Quantidade, Item, ValorItemTotal]),
     imprimir_produto_recibo(RestoLista).
  
 imprimir_produto_recibo([]) :- !.
