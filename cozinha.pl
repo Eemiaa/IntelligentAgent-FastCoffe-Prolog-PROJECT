@@ -1,12 +1,14 @@
+%:- consult('controleFinanceiro.pl').
+
 %itemLoja: nome, preço
 :- dynamic itemLoja/2.
 
-itemLoja("Acucar", 1).
-itemLoja("Cafe", 1).
-itemLoja("Leite", 1).
-itemLoja("Canela", 2).
-itemLoja("Chocolate", 2).
-itemLoja("Ortela", 2).
+itemLoja('Acucar', 1).
+itemLoja('Cafe', 1).
+itemLoja('Leite', 1).
+itemLoja('Canela', 2).
+itemLoja('Chocolate', 2).
+itemLoja('Ortela', 2).
 
 %estoque: produto, quantidade
 :- dynamic estoque/2.
@@ -18,16 +20,25 @@ itemLoja("Ortela", 2).
 :- dynamic livroReceitas/2.
 
 %adicionar RegistreDespesa
+%registreDespesa(Valor)
 comprarIngrediente(Nome, Qtd) :-
     (
-      itemLoja(Nome,_),
+      itemLoja(Nome,Preco),
       (
         (
           estoque(Nome, QtdExistente),
           Aux is Qtd+QtdExistente,
+          (
+            Auxpreco is Qtd*Preco,
+            registreDespesa(Auxpreco)
+          ),
           retract(estoque(Nome, QtdExistente)),
           assertz(estoque(Nome, Aux))
         );
+          (
+            Auxpreco is Qtd*Preco,
+            registreDespesa(Auxpreco)
+          ),
           assertz(estoque(Nome, Qtd))
       ),
       write("Compra realizada com sucesso!"),true,!
@@ -113,6 +124,6 @@ cozinhar(Id, Qtd) :-
 
 cozinharPedido([]) :- !.
 
-cozinharPedido([[Id | Qtd]| Itens]) :- 
+cozinharPedido([[Id, Qtd | _]| Itens]) :- 
       cozinhar(Id, Qtd),
-      cozinharPedido(Itens).
+      cozinharPedido(Itens).   
