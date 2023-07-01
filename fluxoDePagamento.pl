@@ -18,11 +18,12 @@ preco(latte, 15.50).
 %     ListaProdutos: Lista dos produtos comprados pelo cliente.
 %     Recebimento: O quanto o caixa recebeu do cliente.
 realizar_compra(ID, Recebimento) :-
-    pedidoPronto(ID, ValorTotal, _, _, _),
+%    pedidoPronto(ID, ValorTotal, _, _, _),
 %    valor_total_pedido(ListaProdutos, ValorTotal),
     fornecer_recibo(ID, Recebimento),
-    adicionar_tesouro(ValorTotal), !.
- 
+%    adicionar_tesouro(ValorTotal), !.
+    recebaPagamento(ID), !.
+
 % valor_total_pedido/2
 % Calcula o valor total do pedido, iniciando o contador de
 % calcular_item/3 como zero.
