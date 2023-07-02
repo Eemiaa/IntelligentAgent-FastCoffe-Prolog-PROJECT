@@ -106,7 +106,7 @@ Fato/Regra | Descrição
   Esse arquivo contém, basicamente, a fila de prioridades, bem como as suas funcionalidades, que foram construídas a partir de regras específicas, como: adicionar um pedido na fila, remover e alterar a prioridade. Além disso, outras regras auxiliares foram construídas, como a de comparar a prioridade de dois pedidos, para inseri-los na posição certa na fila, a de reordenar os itens da fila com base na nova prioridade adicionada a um outro pedido e, por fim, a de obter o último pedido sem prioridade da fila, a fim de inseri-lo no início da fila, para realizar a gerência de starvation com êxito.
 
 Fato/Regra | Descrição
-:---------:|:---------:
+:---------:|:---------
 `fila\_prioridades/1` | Fato dinâmico que armazena a fila de prioridades.</br>**1º termo**: fila de prioridades em forma de lista</br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
 `cont/1` | Fato dinâmico que armazena o contador de pedidos para adicionar a ordem em que cada pedido foi inserido na fila.</br>**1º termo**: quantidade de pedidos na fila</br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
 `adicionar\_pedido/5` | Regra que adiciona um pedido à fila de prioridades.</br>**1º termo**: ID do pedido</br>**2º termo**: Preço total do pedido</br>**3º termo**: Prioridade do pedido</br>**4º termo**: Descrição do pedido</br>**5º termo**: Tempo de espera do pedido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
@@ -125,7 +125,7 @@ Fato/Regra | Descrição
 Esse módulo especifica as diretivas de pagamento de cada cliente, recebendo uma determinada quantia, calculando o troco e emitindo um recibo. Utiliza a API disponibilizada pelo `orderFlowController.pl` para receber os valores.
 
 Fato/Regra | Descrição
-:---------:| :----------:
+:---------:| :----------
 `realizar_compra/2` | Simula a compra de uma lista de produtos por um cliente no café. Chama o predicado `fornecer_recibo/2`  e `recebaPagamento/1` <br> **1º termo**: ID do Pedido <br> **2º termo**: Recebimento em dinheiro do caixa <br> **`💰 Fluxo de Pagamento`**
 `fornecer_recibo/2` | Gera o recibo com todos os produtos comprados pelo cliente, além do troco e do valor total. Utiliza a API disponibilizada por `orderFlowController.pl` para encontrar os itens atrelados ao pedido e o seu valor total. <br> **1º Termo**: ID do pedido. <br> **2º Termo**: Quantia em dinheiro recebida pelo caixa <br> **`💰 Fluxo de Pagamento`** 
 `calcular_troco/3` | Calcula o troco do pedido, baseado em seu valor total. <br> **1º Termo**: ID do pedido <br> **2º Termo**: Quantia recebida pelo caixa <br> **3º Termo**: Valor de retorno do troco. <br> **`💰 Fluxo de Pagamento`**
