@@ -1,5 +1,3 @@
-# IntelligentAgent-FastCoffe-Prolog-PROJECT
-
 
 Especificação do OrderFlowController.pl
 =======================================
