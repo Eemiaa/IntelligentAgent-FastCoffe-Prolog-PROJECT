@@ -68,7 +68,7 @@ Esse arquivo, basicamente, é o controlador de fluxo de pedidos. Ele realiza ati
 Além disso, esse arquivo realiza a gerência das notificações dos pedidos, para emitir um aviso no sistema, mostrando que ele está pronto. Somado a isso, essa parte do programa também realiza todo o tratamento necessário para manipular a ordem de emissão dessas notificações.
 
 Fato/Regra | Descrição
-:---------:|:----------:
+:---------:|:----------
 ` itemCardapio/4 `| Fato que descreve um item do cardápio, contendo o número do item, preço, tempo de espera e descrição. </br> **1º termo**: número do item </br> **2º termo**: preço </br> **3º termo**: tempo de espera </br> **4º termo**: descrição/nome do item </br> **`⚙️ FATO AUXILIAR DINÂMICO`**
 `criarMensagem/2` | Regra que cria a mensagem de pedido que será exibida na notificação, com base na lista de itens passadas nas especificações do pedido.</br>**1º termo**: Lista de itens e quantidade de cada item do pedido</br>**2º termo**: Mensagem devolvida como resposta</br>**`🔔GERÊNCIA DE NOTIFICAÇÕES`**</br>**`⚙️ REGRA AUXILIAR`**
 `buscarPedidoPeloID/6` | Regra que busca um pedido pelo seu ID na fila de prioridades \[primeiro termo da regra\] e retorna suas informações (preço, prioridade, itens e tempo de espera).</br>**1º termo**: fila de prioridades</br>**2º termo**: ID do pedido</br>**3º termo**: Preço total do pedido</br>**4º termo**: Prioridade do pedido</br>**5º termo**: Itens e suas quantidade no pedido</br>**6º termo**: Tempo de espera (considerando apenas os itens que vão ser preparados)</br> **`📝GERÊNCIA DE PEDIDOS`**</br> **`⚙️ REGRA AUXILIAR`**
