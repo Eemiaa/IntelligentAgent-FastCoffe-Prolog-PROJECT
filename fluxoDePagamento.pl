@@ -1,3 +1,5 @@
+:- dynamic pedidoPago/1.
+
 % realizar_compra/1
 % Simula a compra de uma lista de produtos por um cliente no café.
 % Parâmetros:
@@ -6,7 +8,8 @@
 realizar_compra(ID, Recebimento) :-
 %    pedidoPronto(ID, ValorTotal, _, _, _),
     fornecer_recibo(ID, Recebimento),
-    recebaPagamento(ID), !.
+    recebaPagamento(ID), 
+    asserta(pedidoPago(ID)),!.
  
 % fornecer_recibo/2
 % Gera o recibo com todos os produtos comprados pelo cliente,
@@ -47,5 +50,5 @@ imprimir_produto_recibo([[Numero, Quantidade] | RestoLista]) :-
     ValorItemTotal is Preco * Quantidade,
     format("~w ~w~15| : ~2f~5|~n", [Quantidade, Item, ValorItemTotal]),
     imprimir_produto_recibo(RestoLista).
- 
+
 imprimir_produto_recibo([]) :- !.
