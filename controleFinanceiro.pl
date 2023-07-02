@@ -15,7 +15,8 @@ data(Date,DateTime) :-
 inicializeCaixa:-
                     data(Data,_),
                     assertz(receita_diaria(Data,0)),
-                    assertz(despesa_diaria(Data,0)).
+                    assertz(despesa_diaria(Data,0)),
+                    write('Caixa inicializado com sucesso!').
 
 % Mostra o valor total recebido no dia
 totalRecebido:-    

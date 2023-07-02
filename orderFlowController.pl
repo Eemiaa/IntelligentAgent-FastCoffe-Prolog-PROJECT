@@ -245,5 +245,5 @@ cancelarPedido(ID) :- cancelarNotificacao(ID),
                       remover_pedido(ID),
                       write('Pedido cancelado com sucesso!') .
 
-pegarPedido(ID) :- retract(pedidoPronto(ID, _, _, _, _))
+pegarPedido(ID) :- retract(pedidoPronto(ID, _, _, _, _)),
                    write('Está aqui o seu pedido, volte sempre :)'). 
