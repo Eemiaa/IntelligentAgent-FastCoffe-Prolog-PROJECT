@@ -97,8 +97,25 @@ Fato/Regra | Descrição
 `idDoVerificador/2` | Fato dinâmico que armazena o ID da thread que fica monitorando quando o processo de emissão de notificação agendada morre e o ID do pedido da notificação agendada para relacionar pedido e notificação.</br>**1º termo**: ID do pedido</br>**2º termo**: ID da thread </br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 🔔GERÊNCIA DE NOTIFICAÇÕES`**
 
 <ul>
-  <li><h3><a name="filaPrioridades.pl"> filaPrioridades.pl.pl</a></h3></li>
-    </ul>
+  <li><h3><a name="filaPrioridades.pl"> filaPrioridades.pl</a></h3></li>
+
+  Esse arquivo contém, basicamente, a fila de prioridades, bem como as suas funcionalidades, que foram construídas a partir de regras específicas, como: adicionar um pedido na fila, remover e alterar a prioridade. Além disso, outras regras auxiliares foram construídas, como a de comparar a prioridade de dois pedidos, para inseri-los na posição certa na fila, a de reordenar os itens da fila com base na nova prioridade adicionada a um outro pedido e, por fim, a de obter o último pedido sem prioridade da fila, a fim de inseri-lo no início da fila, para realizar a gerência de starvation com êxito.
+
+Fato/Regra | Descrição
+:---------:|:---------:
+`fila\_prioridades/1` | Fato dinâmico que armazena a fila de prioridades.</br>**1º termo**: fila de prioridades em forma de lista</br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`cont/1` | Fato dinâmico que armazena o contador de pedidos para adicionar a ordem em que cada pedido foi inserido na fila.</br>**1º termo**: quantidade de pedidos na fila</br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`adicionar\_pedido/5` | Regra que adiciona um pedido à fila de prioridades.</br>**1º termo**: ID do pedido</br>**2º termo**: Preço total do pedido</br>**3º termo**: Prioridade do pedido</br>**4º termo**: Descrição do pedido</br>**5º termo**: Tempo de espera do pedido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`remover\_pedido/1` | Regra que remove um pedido da fila de prioridades.</br>**1º termo**: ID do pedido </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`alterar\_prioridade/2` | Regra que altera a prioridade de um pedido na fila de prioridades e reordena a fila.</br>**1º termo**: ID do pedido que se deseja mudar a prioridade</br>**2º termo**: Nova prioridade que se deseja colocar no pedido</br> **`⚙️ REGRA AUXILIAR`**</br> **`📝GERÊNCIA DE PEDIDOS`**
+`inserir\_pedido/3` | Regra auxiliar da adicionar\_pedido/5 que insere um pedido na fila de prioridades.</br>**1º termo**: Fila de prioridades na forma de lista</br>**2º termo**: pedido, na forma de termo complexo: pedido(ID, Preco, Prioridade, Ordem de Inserção, Descrição, Espera)</br>**3º termo**: Nova fila que será dada como resposta, com o novo pedido já inserido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`remover\_pedido/3` | Regra auxiliar da remover\_pedido/1 que remove um pedido da fila de prioridades.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido que se deseja remover</br>**3º termo**: Nova fila obtida como resposta, com o pedido já removido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`alterar\_prioridade/4` | Regra auxiliar da alterar\_prioridade/2 que altera a prioridade de um pedido na fila de prioridades.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido que se deseja alterar a prioridade</br>**3º termo**: Nova prioridade que se deseja colocar no pedido</br>**4º termo**: Nova fila resultante da alteração da prioridade do pedido na lista e da reordenação dele nela</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`compara\_prioridades/2` | Regra que compara as prioridades entre dois pedidos. Caso seja um true e um false, ele considera o true com maior prioridade. Caso seja dois true ou dois false, ele considera quem entrou primeiro, considerando que cada pedido tem um contador de ordem de chegada.</br>**1º termo**: Pedido 1</br>**2º termo**: Pedido 2</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`reordenar\_fila\_prioridades/2` | Regra que reordena a fila de prioridades com base nas novas prioridades, quando se usa a regra alterar\_prioridade/2.</br>**1º termo**: Fila de prioridades</br>**2º termo**: Fila reordenada obtida como resposta</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`pegar\_ultimo\_false\_da\_fila/1` | Regra que obtém o ID do último pedido sem prioridade na fila.</br>**1º termo**: ID do pedido obtido como resposta</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`pegar\_ultimo\_false\_da\_fila/2` | Sobrecarga da regra pegar\_ultimo\_false\_da\_fila/1 com o ID do pedido como argumento inicial.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido obtido como resposta </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+</ul>
 
   <li><h3><a name="fluxoDePagamento.pl">💵 fluxoDePagamento.pl</a></h3></li>
   
