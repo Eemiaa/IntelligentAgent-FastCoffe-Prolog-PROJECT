@@ -16,11 +16,10 @@ preco(latte, 15.50).
 % realizar_compra/1
 % Simula a compra de uma lista de produtos por um cliente no café.
 % Parâmetros:
-%     ListaProdutos: Lista dos produtos comprados pelo cliente.
+%     ID: ID do pedido.
 %     Recebimento: O quanto o caixa recebeu do cliente.
 realizar_compra(ID, Recebimento) :-
 %    pedidoPronto(ID, ValorTotal, _, _, _),
-%    valor_total_pedido(ListaProdutos, ValorTotal),
     fornecer_recibo(ID, Recebimento),
     recebaPagamento(ID), 
     asserta(pedidoPago(ID)),!.
@@ -55,11 +54,10 @@ calcular_item([], NewTotal, NewTotal) :- !.
 % Gera o recibo com todos os produtos comprados pelo cliente,
 % além do troco e do valor total.
 % Parâmetros:
-%     ListaProdutos: Lista com os produtos do cliente
+%     ID: ID do pedido.
 %     Recebimento: Quanto o caixa recebeu do cliente.
 fornecer_recibo(ID, Recebimento) :-
     pedidoPronto(ID, ValorTotal, _, _, _),
-%    valor_total_pedido(ListaProdutos, ValorTotal),
     calcular_troco(ID, Recebimento, Troco),
     Recebimento >= ValorTotal,
     format("--- Fast Cofee (TM) ---\n"),
@@ -74,36 +72,22 @@ fornecer_recibo(ID, Recebimento) :-
 % calcular_troco/3
 % Receber o pagamento e dar o troco
 % Parâmetros:
-%     ListaProdutos - Lista de produtos
+%     ID - ID do Pedido;
 %     Recebimento - Quantia recebida pelo cliente
 % Retorna:
 %     Troco - O troco calculado
 calcular_troco(ID, Recebimento, Troco) :-
     pedidoPronto(ID, ValorTotal, _, _, _),
-%    valor_total_pedido(ListaProdutos, ValorTotal),
     Troco is Recebimento - ValorTotal, !.
- 
+
 % imprimir_produto_recibo/1
 % Imprime um produto do recibo, atravessando a lista de produtos.
 % Parâmetros:
 %     ListaProdutos: Todos os produtos.
 imprimir_produto_recibo([[Numero, Quantidade] | RestoLista]) :-
     itemCardapio(Numero, Preco, _, Item),
-%   preco(Item, Preco),
     ValorItemTotal is Preco * Quantidade,
     format("~w ~w~15| : ~2f~5|~n", [Quantidade, Item, ValorItemTotal]),
     imprimir_produto_recibo(RestoLista).
- 
+
 imprimir_produto_recibo([]) :- !.
- 
-% adicionar_tesouro/1
-% Adiciona uma determinada quantia no tesouro do café, removendo
-% o predicado tesouro/1 antigo e adicionando um novo com a quantia
-% atualizada.
-% Parâmetros:
-%     Valor: O valor a ser adicionado no tesouro atual.
-adicionar_tesouro(Valor) :-
-    tesouro(ValorAnterior),
-    NovoValor is ValorAnterior + Valor,
-    retract(tesouro(ValorAnterior)),
-    asserta(tesouro(NovoValor)), !.
