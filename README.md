@@ -25,7 +25,6 @@
     <li style="text-align: left;"><a href="cozinha.pl">cozinha.pl</a></li>
     <li style="text-align: left;"><a href="controleFinanceiro.pl"> controleFinanceiro.pl</a></li>
   </ul>
-  <li style="text-align: left;"><a href="#ExemploUso>Exemplo de uso"</a> aaa</li>
   <li style="text-align: left;"><a href="#authors">Autores</a></li>
 </ul>
 
@@ -121,6 +120,101 @@ Fato/Regra | Descrição
 `pegar\_ultimo\_false\_da\_fila/2` | Sobrecarga da regra pegar\_ultimo\_false\_da\_fila/1 com o ID do pedido como argumento inicial.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido obtido como resposta </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
 </ul>
 
+<h2 id="FluxoDePagamentoExemplosDeUso" > Exemplos de Uso </h2>
+Exemplo de uso das regras executadas pelo agente ou cliente.
+
+=================================================
+- `inicializeCaixa/0`
+~~~prolog
+?- inicializeCaixa.
+~~~
+~~~
+Caixa inicializado com sucesso!
+true.
+~~~
+- A base de conhecimento recebe dinâmicamente os fatos receita_diaria(DataDoSistema,0) e despesa_diaria(DataDoSistema,0). 
+
+- `cardapio/0`
+~~~prolog
+?- cardapio.
+~~~
+~~~
+ =================== ☕ CARDAPIO ☕ ====================
+1. Americano                                      R$3.00
+2. Cappuccino                                     R$2.00
+3. Double Expresso                                R$4.00
+4. Latte                                          R$3.00
+5. Macchiato                                      R$5.00
+6. Mint chocolate                                 R$6.50
+7. Expresso                                       R$8.00
+ =======================================================
+
+true.
+~~~
+- Mostra os itens do cardápio em uma tabela
+- Esses itens são inseridos dinamicamente na base de conhecimento
+---
+- `fazerPedido/2`
+~~~prolog
+?- fazerPedido(Preco, ID).
+~~~
+~~~
+Insira seu pedido em uma lista de listas: 
+[[< Numero do item >, < Quantidade >], ...]
+|: [[1,1]].
+
+Prioridade [true/false]: 
+|: true.
+
+Compra realizada com sucesso!Ingrediente usado com sucesso!Compra realizada com sucesso!Ingrediente usado com sucesso!Alimento cozinhado com sucesso
+Preco = 3,
+ID = 9.
+
+?- listing(pedidoPronto).
+:- dynamic pedidoPronto/5.
+
+pedidoPronto(9, 3, true, [[1, 1]], 1).
+
+true.
+~~~
+- Realiza um pedido através de uma lista de listas: [[< Numero do item >, < Quantidade >], ...]
+- Em seguida, é definida a prioridade do pedido
+- Por fim, é devolvido ao cliente o preço total e o ID do pedido.
+---
+- `verStatusDoPedido/1`
+~~~prolog
+?- verStatusDoPedido(ID).
+~~~
+~~~
+O Pedido 3 já está pronto. O valor total deu R$3.00
+true. 
+~~~
+- Verifica o status do pedido, que pode ser: pronto, ainda não está pronto e inexistente, caso um ID inválido seja passado
+---
+- `cancelarPedido/1`
+~~~prolog
+?- cancelarPedido(ID).
+~~~
+~~~
+Pedido cancelado com sucesso!
+
+true.
+~~~
+- Cancela um pedido em andamento pelo ID dele
+---
+- `pegarPedido/1`
+~~~prolog
+?- pegarPedido(ID).
+~~~
+~~~
+Está aqui o seu pedido, volte sempre :)
+
+true.
+~~~
+- Obtem o pedido quando ele está pronto 
+- Caso ele não esteja pronto, vai ser exibido um false
+- Caso ele esteja pronto, acontece o mesmo caso do exemplo acima.
+
   <li><h3 id="fluxoDePagamento">💵 fluxoDePagamento.pl</a></h3>
 Esse módulo especifica as diretivas de pagamento de cada cliente, recebendo uma determinada quantia, calculando o troco e emitindo um recibo. Utiliza a API disponibilizada pelo `orderFlowController.pl` para receber os valores.
 
@@ -215,107 +309,116 @@ Fato/Regra | Descrição
 `totalRecebido/0` |  Regra tem o objetivo exibir o valor total recebido no dia. 
 `totalDespesas/0` | Regra tem o objetivo exibir o valor total de despesas do dia.*
 `recebaPagamento/1` | Regra responsável por registrar o valor de um pedido como receita ao receber um pagamento.</br>**1º termo**: Variável contendo o ID do pedido</br>
-`registreDespesa/1` | Regra que permite registrar um valor como despesa no sistema. </br>**1º termo**: Parâmetro que representa o montante a ser registrado. </br>
+`registreDespesa/4` | Regra que permite registrar um valor como despesa no sistema. Recebe como parâmetro nome do produto adquirido, seu valor e quantidade, e registra essas informações como despesa. </br>**1º termo**: Recebe o nome do produto comprado que gerou a despesa</br>**2º termo**: Recebe o valor gasto com o produto comprado</br>**3º termo**: Recebe a quantidade do produto comprado
 `calculeLucro/1` | Regra que calcula o lucro obtido na data atual, o resultado do cálculo é atribuído à variável Lucro. Ela utiliza os predicados data/2, receita_diaria/2 e despesa_diaria/2 para obter os valores necessários. O lucro é calculado subtraindo o total de despesas da receita total do dia.</br>**1º termo**: Variável usada como retorno da consulta com o valor do lucro atual</br>**`⚙️ REGRA AUXILIAR`**
 `calculeDeficit/1` | Regra que calcula o déficit obtido na data atual. Utiliza os predicados data/2, receita_diaria/2 e despesa_diaria/2 para obter os valores necessários. O déficit é calculado subtraindo a receita total do dia pelo total de despesas.</br>**1º termo**: Variável usada como retorno da consulta com o valor do déficit atual</br>**`⚙️ REGRA AUXILIAR`**
 `listeEntradas/0` | Regra que lista a data e hora, o valor e o ID de todos os pedidos recebidos. Ela utiliza o predicado listing/1 para exibir as informações armazenadas no fato receita/3.
 `listeSaidas/0` |  Regra que lista a data e hora e o valor de todas as saídas registradas, ou seja, as despesas realizadas durante o dia. Utiliza o predicado listing/1 para exibir as informações armazenadas no fato despesa/2.
 `resumaCaixa/0` |  Regra que mostra um resumo do caixa, exibindo o total recebido, o total gasto e o lucro ou prejuízo do dia. Utiliza os predicados data/2, receita_diaria/2 e despesa_diaria/2 para obter as informações necessárias e as exibe na tela formatadas de acordo com o resultado obtido.
 
-<h2 style="text-align: center;"><a name="ExemploUso"> Exemplo de Uso</a></h2>
-Exemplo de uso das regras executadas pelo agente ou cliente.
+<h2 id="FluxoDePagamentoExemplosDeUso" > Exemplos de Uso </h2>
 
-=================================================
 - `inicializeCaixa/0`
 ~~~prolog
 ?- inicializeCaixa.
 ~~~
+- Acrescenta na base de conhecimento os fatos dinâmicos receita_diaria(Data,0) e despesa_diaria(Data,0) com a Data do dia e o valor zero.
+
+- `totalRecebido/0`
+~~~prolog    
+?- totalRecebido.
 ~~~
-Caixa inicializado com sucesso!
+~~~prolog
+Total recebido em 03 Jul 2023: R$140.0 .
+true.
+~~~~
+
+- `totalDespesas/0`
+~~~prolog    
+?- totalDespesas.
+~~~
+~~~prolog
+Total de despesas em 03 Jul 2023 : R$51 .
+true.
+~~~~
+
+- `recebaPagamento/1`
+~~~prolog    
+?- recebaPagamento(2).
+~~~
+    - Busca o valor recebido pelo pedido de ID 2 e registra como valor de receita.
+
+- `registreDespesa/4`
+~~~prolog    
+?- registreDespesa('acucar', 6.99,1).
+~~~
+    - Atualiza o valor da despesa diária e registra na base de conhecimento a despesas e as informações do nome e da quantidade do produto que a gerou relacionando-as com a data e hora da despesa realizada. 
+
+- `calculeLucro/1`
+~~~prolog    
+?- calculeLucro(Lucro).
+~~~
+~~~prolog 
+Lucro = 89.0.
+~~~
+- `calculeDeficit/1`
+~~~prolog    
+?- calculeDeficit(Deficit).
+~~~
+~~~prolog 
+Deficit = 9.0.
+~~~
+
+- `listeEntradas./0`
+~~~prolog    
+?- listeEntradas.
+~~~
+~~~prolog 
+
+receita("03 Jul 2023 00:07:29", 96.0, 10).
+receita("03 Jul 2023 00:08:10", 44.0, 1).
 true.
 ~~~
-- A base de conhecimento recebe dinâmicamente os fatos receita_diaria(DataDoSistema,0) e despesa_diaria(DataDoSistema,0). 
 
-- `cardapio/0`
-~~~prolog
-?- cardapio.
+- `listeSaidas./0`
+~~~prolog    
+?- listeSaidas.
 ~~~
-~~~
- =================== ☕ CARDAPIO ☕ ====================
-1. Americano                                      R$3.00
-2. Cappuccino                                     R$2.00
-3. Double Expresso                                R$4.00
-4. Latte                                          R$3.00
-5. Macchiato                                      R$5.00
-6. Mint chocolate                                 R$6.50
-7. Expresso                                       R$8.00
- =======================================================
+~~~prolog 
 
-true.
-~~~
-- Mostra os itens do cardápio em uma tabela
-- Esses itens são inseridos dinamicamente na base de conhecimento
----
-- `fazerPedido/2`
-~~~prolog
-?- fazerPedido(Preco, ID).
-~~~
-~~~
-Insira seu pedido em uma lista de listas: 
-[[< Numero do item >, < Quantidade >], ...]
-|: [[1,1]].
+:- dynamic despesa/4.
 
-Prioridade [true/false]: 
-|: true.
-
-Compra realizada com sucesso!Ingrediente usado com sucesso!Compra realizada com sucesso!Ingrediente usado com sucesso!Alimento cozinhado com sucesso
-Preco = 3,
-ID = 9.
-
-?- listing(pedidoPronto).
-:- dynamic pedidoPronto/5.
-
-pedidoPronto(9, 3, true, [[1, 1]], 1).
+despesa("03 Jul 2023 00:06:46", 5, 'Acucar', 5).
+despesa("03 Jul 2023 00:06:46", 5, 'Cafe', 5).
+despesa("03 Jul 2023 00:06:46", 5, 'Canela', 10).
+despesa("03 Jul 2023 00:06:46", 1, 'Acucar', 1).
+despesa("03 Jul 2023 00:06:46", 1, 'Cafe', 1).
+despesa("03 Jul 2023 00:06:46", 1, 'Leite', 1).
+despesa("03 Jul 2023 00:06:46", 3, 'Leite', 3).
+despesa("03 Jul 2023 00:06:46", 3, 'Cafe', 3).
+despesa("03 Jul 2023 00:06:46", 3, 'Canela', 6).
+despesa("03 Jul 2023 00:07:11", 2, 'Acucar', 2).
+despesa("03 Jul 2023 00:07:11", 2, 'Cafe', 2).
+despesa("03 Jul 2023 00:07:11", 2, 'Chocolate', 4).
+despesa("03 Jul 2023 00:07:11", 2, 'Cafe', 2).
+despesa("03 Jul 2023 00:07:11", 2, 'Canela', 4).
+despesa("03 Jul 2023 00:07:11", 2, 'Acucar', 2).
 
 true.
 ~~~
-- Realiza um pedido através de uma lista de listas: [[< Numero do item >, < Quantidade >], ...]
-- Em seguida, é definida a prioridade do pedido
-- Por fim, é devolvido ao cliente o preço total e o ID do pedido.
----
-- `verStatusDoPedido/1`
-~~~prolog
-?- verStatusDoPedido(ID).
+- `resumaCaixa/0`
+~~~prolog    
+?- resumaCaixa.
 ~~~
-~~~
-O Pedido 3 já está pronto. O valor total deu R$3.00
-true. 
-~~~
-- Verifica o status do pedido, que pode ser: pronto, ainda não está pronto e inexistente, caso um ID inválido seja passado
----
-- `cancelarPedido/1`
-~~~prolog
-?- cancelarPedido(ID).
-~~~
-~~~
-Pedido cancelado com sucesso!
+~~~prolog 
 
+######## Resumo do Caixa  03 Jul 2023 #########
+Total Recebido: R$140.0
+Total Gasto: R$51
+Lucro: R$89.0
 true.
 ~~~
-- Cancela um pedido em andamento pelo ID dele
----
-- `pegarPedido/1`
-~~~prolog
-?- pegarPedido(ID).
-~~~
-~~~
-Está aqui o seu pedido, volte sempre :)
 
-true.
-~~~
-- Obtem o pedido quando ele está pronto 
-- Caso ele não esteja pronto, vai ser exibido um false
-- Caso ele esteja pronto, acontece o mesmo caso do exemplo acima.
 
 <h2 style="text-align: center;"><a name="authors">&#x1F465 Autores</a></h2>
 

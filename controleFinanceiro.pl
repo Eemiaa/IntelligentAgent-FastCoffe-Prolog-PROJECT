@@ -1,8 +1,8 @@
 % Fatos
-:- dynamic receita_diaria/2.
-:- dynamic despesa_diaria/2.
-:- dynamic receita/3.
-:- dynamic despesa/2.
+:- dynamic receita_diaria/2. % relaciona a data do sistema com a receita acumulada
+:- dynamic despesa_diaria/2. % relaciona a data do sistema com a despesa acumulada
+:- dynamic receita/3. % relaciona a data e hora do sistema com o valor recebido e o id do pedido
+:- dynamic despesa/4. % relaciona a data e hora do sistema com a quantidade, o nome e o valor de uma despesa.
 
 % Regras
 % retorna a data formatada
@@ -16,7 +16,7 @@ inicializeCaixa:-
                     data(Data,_),
                     assertz(receita_diaria(Data,0)),
                     assertz(despesa_diaria(Data,0)),
-                    write('Caixa inicializado com sucesso!').
+                    write('\u001b[42m Caixa inicializado com sucesso!\u001b[m').
 
 % Mostra o valor total recebido no dia
 totalRecebido:-    
@@ -39,10 +39,10 @@ recebaPagamento(Id) :-      pedidoPronto(Id, Valor, _, _, _),
                             retract(receita_diaria(Data,ReceitaAntiga)),
                             assertz(receita_diaria(Data,ReceitaAtual)).
 
-% Recebe como parâmetro um valor e o registra como despesa.                           
-registreDespesa(Valor):-
+% Recebe como parâmetro nome do produto adquirido, seu valor e quantidade, e registra essas informações como despesa.                       
+registreDespesa(Nome, Valor, Qtd):-
                             data(Data,DateTime),
-                            assertz(despesa(DateTime,Valor)),
+                            assertz(despesa(DateTime,Qtd,Nome,Valor)),
                             despesa_diaria(Data,ValorAntigo),
                             ValorAtual is ValorAntigo + Valor,
                             retract(despesa_diaria(Data,ValorAntigo)),
@@ -80,6 +80,4 @@ resumaCaixa:-
                 ((Lucro > 0,
                 format('Lucro: R$~w',[Lucro])),!;
                 (Deficit is Despesa - Receita,
-                format('Prejuízo: R$~w',[Deficit]))). 
-
-% inicializeCaixa,recebaPagamento(1),totalRecebido,registreDespesa(5),totalDespesas,calculeLucro(Lucro),calculeDeficit(Deficit),listeEntradas,listeSaidas,resumaCaixa,registreDespesa(10),resumo_caixa.
+                format('Prejuízo: R$~w',[Deficit]))).
