@@ -21,6 +21,14 @@ itemLoja('Ortela', 2).
 
 %adicionar RegistreDespesa
 %registreDespesa(Valor)
+
+infoCozinha :- write("\u001b[44m Livro de Receitas:\n"),
+            listing(livroReceitas/2),
+            write("\u001b[41m Estoque:\n"),
+            listing(estoque/2),
+            write("\u001b[41m Itens da Loja:\n"),
+            listing(itemLoja/2).
+    
 comprarIngrediente(Nome, Qtd) :-
     (
       itemLoja(Nome,Preco),
@@ -30,20 +38,20 @@ comprarIngrediente(Nome, Qtd) :-
           Aux is Qtd+QtdExistente,
           (
             Auxpreco is Qtd*Preco,
-            registreDespesa(Auxpreco)
+            registreDespesa(Nome, Auxpreco, Qtd)
           ),
           retract(estoque(Nome, QtdExistente)),
           assertz(estoque(Nome, Aux))
         );
           (
             Auxpreco is Qtd*Preco,
-            registreDespesa(Auxpreco)
+            registreDespesa(Nome, Auxpreco, Qtd)
           ),
           assertz(estoque(Nome, Qtd))
       ),
-      write("Compra realizada com sucesso!"),true,!
+      write("\u001b[42m\nCompra realizada com sucesso!\u001b[m"),true,!
     );
-    write("O produto não está disponível na loja."),false,!.
+    write("\nO produto não está disponível na loja."),false,!.
 
 
 usarIngrediente(Nome, Qtd) :-
@@ -63,13 +71,13 @@ usarIngrediente(Nome, Qtd) :-
         retract(estoque(Nome, Qtd)),
         assertz(estoque(Nome, Aux))
       ),
-      write("Ingrediente usado com sucesso!")
+      write("\u001b[42m\nIngrediente usado com sucesso!\u001b[m")
     ).
 
 addReceita(Nome, Ingredientes) :- 
     (
       Ingredientes = [],
-      write("Você não pode fornecer uma lista vazia de ingredientes."), 
+      write("\nVocê não pode fornecer uma lista vazia de ingredientes."), 
       !
     );
     (
@@ -82,12 +90,12 @@ addReceita(Nome, Ingredientes) :-
         assertz(livroReceitas(Nome, Ingredientes)) 
       )
     ),
-    write("Receita adicionada com sucesso!").
+    write("\u001b[42m\nReceita adicionada com sucesso!\u001b[m").
 
 addItemCardapio(Id, Preco, Tempo, Nome) :- 
       (
         not(livroReceitas(Nome,_)),
-        write("Nao existe uma receita com esse nome."),
+        write("\nNao existe uma receita com esse nome."),
         !
       );
       (
@@ -95,7 +103,7 @@ addItemCardapio(Id, Preco, Tempo, Nome) :-
           Id < 1;
           Id > 5
         ),
-        write("O id nao esta no intervalo correto"),
+        write("\nO id nao esta no intervalo correto"),
         !
       );
       (
@@ -107,8 +115,8 @@ addItemCardapio(Id, Preco, Tempo, Nome) :-
         retract(itemCardapio(Id,_,_,_))
       );
       assertz(itemCardapio(Id,Preco,Tempo,Nome)),
-      write("Item adicionado com sucesso no cardapio!")
-      .
+      write("\u001b[42m\nItem adicionado com sucesso no cardapio!\u001b[m")
+      , !.
 
 cozinhar([], _) :- !.
 
@@ -119,8 +127,7 @@ cozinhar([K | T], Qtd) :-
 cozinhar(Id, Qtd) :- 
       itemCardapio(Id,_,_,Nome),
       livroReceitas(Nome, Ingredientes),
-      cozinhar(Ingredientes, Qtd), 
-      write("Alimento cozinhado com sucesso").
+      cozinhar(Ingredientes, Qtd).
 
 cozinharPedido([]) :- !.
 

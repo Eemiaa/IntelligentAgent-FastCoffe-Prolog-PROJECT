@@ -1,0 +1,48 @@
+Fluxo de comandos:
+
+?- inicializeCaixa.
+
+?- addReceita('Americano',['Acucar','Cafe','Canela']).
+?- addReceita('Cappuccino',['Chocolate','Cafe','Canela','Acucar']).
+?- addReceita('Double Expresso',['Acucar','Cafe']).
+?- addReceita('Latte',['Acucar','Cafe','Leite']).
+?- addReceita('Macchiato',['Leite','Cafe','Canela']).
+
+?- addItemCardapio(1, 9.0, 1, 'Americano').
+?- addItemCardapio(2, 10.0, 2, 'Cappuccino').
+?- addItemCardapio(3, 12.0, 3, 'Double Expresso').
+?- addItemCardapio(4, 6.0, 1, 'Latte').
+?- addItemCardapio(5, 15.0, 2, 'Macchiato').
+
+?- infoCozinha.
+
+?- cardapio.
+?- fazerPedido(Preco, ID).
+
+:| [[1,5], [4,1], [5,3]].
+
+:| false.
+
+?- fazerPedido(Preco, ID).
+
+:| [[3,2], [2,2]].
+
+:| true.
+
+?- verStatusDoPedido(7).
+
+?- verStatusDoPedido(4).
+
+?- realizar_compra(7, 100).
+
+?- pegarPedido(7).
+
+?- realizar_compra(4, 50).
+
+?- pegarPedido(4).
+
+?- resumaCaixa.
+
+?- listeEntradas.
+
+?- listeSaidas.

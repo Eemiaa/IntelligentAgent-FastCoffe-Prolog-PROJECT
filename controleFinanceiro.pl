@@ -2,7 +2,7 @@
 :- dynamic receita_diaria/2.
 :- dynamic despesa_diaria/2.
 :- dynamic receita/3.
-:- dynamic despesa/2.
+:- dynamic despesa/4.
 
 % Regras
 % retorna a data formatada
@@ -15,7 +15,8 @@ data(Date,DateTime) :-
 inicializeCaixa:-
                     data(Data,_),
                     assertz(receita_diaria(Data,0)),
-                    assertz(despesa_diaria(Data,0)).
+                    assertz(despesa_diaria(Data,0)),
+                    write('\u001b[42m Caixa inicializado com sucesso!\u001b[m').
 
 % Mostra o valor total recebido no dia
 totalRecebido:-    
@@ -39,9 +40,9 @@ recebaPagamento(Id) :-      pedidoPronto(Id, Valor, _, _, _),
                             assertz(receita_diaria(Data,ReceitaAtual)).
 
 % Recebe como parâmetro um valor e o registra como despesa.                           
-registreDespesa(Valor):-
+registreDespesa(Nome, Valor, Qtd):-
                             data(Data,DateTime),
-                            assertz(despesa(DateTime,Valor)),
+                            assertz(despesa(DateTime,Qtd,Nome,Valor)),
                             despesa_diaria(Data,ValorAntigo),
                             ValorAtual is ValorAntigo + Valor,
                             retract(despesa_diaria(Data,ValorAntigo)),

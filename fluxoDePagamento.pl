@@ -1,5 +1,6 @@
 % Calcular o valor total do pedido
- 
+:- dynamic pedidoPago/1.
+
 :- dynamic tesouro/1.
  
 % tesouro/1
@@ -21,9 +22,9 @@ realizar_compra(ID, Recebimento) :-
 %    pedidoPronto(ID, ValorTotal, _, _, _),
 %    valor_total_pedido(ListaProdutos, ValorTotal),
     fornecer_recibo(ID, Recebimento),
-%    adicionar_tesouro(ValorTotal), !.
-    recebaPagamento(ID), !.
-
+    recebaPagamento(ID), 
+    asserta(pedidoPago(ID)),!.
+ 
 % valor_total_pedido/2
 % Calcula o valor total do pedido, iniciando o contador de
 % calcular_item/3 como zero.
@@ -60,7 +61,7 @@ fornecer_recibo(ID, Recebimento) :-
     pedidoPronto(ID, ValorTotal, _, _, _),
 %    valor_total_pedido(ListaProdutos, ValorTotal),
     calcular_troco(ID, Recebimento, Troco),
-    Recebimento > ValorTotal,
+    Recebimento >= ValorTotal,
     format("--- Fast Cofee (TM) ---\n"),
     pedidoPronto(ID, _, _, Itens, _),
     imprimir_produto_recibo(Itens),
