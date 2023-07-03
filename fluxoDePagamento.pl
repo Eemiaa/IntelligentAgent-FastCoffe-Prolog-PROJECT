@@ -20,7 +20,7 @@ realizar_compra(ID, Recebimento) :-
 fornecer_recibo(ID, Recebimento) :-
     pedidoPronto(ID, ValorTotal, _, _, _),
     calcular_troco(ID, Recebimento, Troco),
-    Recebimento > ValorTotal,
+    Recebimento >= ValorTotal,
     format("--- Fast Cofee (TM) ---\n"),
     pedidoPronto(ID, _, _, Itens, _),
     imprimir_produto_recibo(Itens),
