@@ -92,8 +92,9 @@ obterTempoAtualEmSegundos(TempoSegundos) :-
     get_time(Tempo),
     floor(Tempo, TempoSegundos).
 
-lerVerificador(Check) :- 
-        open('verificador.txt', read, Stream),
+lerVerificador(Check, PID) :- 
+        format(string(Arquivo), 'verificador~w.txt', [PID]),
+        open(Arquivo, read, Stream),
         read_line_to_string(Stream, Check),
         close(Stream).
 
@@ -109,12 +110,12 @@ agendarNotificacao(Segundos, ID) :-
     fila_prioridades(Fila),
     buscarPedidoPeloID(Fila, ID, _, _, Itens, _),
     criarMensagem(Itens, Mensagem),
-    % format(string(Comando), "sleep ~w && echo 'O pedido ~w está pronto: ~w' > /dev/pts/2 & echo $! > pid.txt", [Segundos, ID, Mensagem]),
-    format(string(Comando), "sleep ~w && DISPLAY=:0 notify-send 'O pedido ~w está pronto: ~w' & echo $! > pid.txt", [Segundos, ID, Mensagem]),
+    format(string(Comando), "sleep ~w && echo 'O pedido ~w está pronto: ~w' > /dev/pts/3 & echo $! > pid.txt", [Segundos, ID, Mensagem]),
+%    format(string(Comando), "sleep ~w && DISPLAY=:0 notify-send 'O pedido ~w está pronto: ~w' & echo $! > pid.txt", [Segundos, ID, Mensagem]),
     shell(Comando),
     lerPid(PID),
     obterTempoAtualEmSegundos(TempoAtual),
-    % write('tempo atual = '), write(TempoAtual), nl,
+    write('tempo atual = '), write(TempoAtual), nl,
     TempoPrevisto is TempoAtual + Segundos,
     assertz(notificacaoAgendada(PID, ID, TempoPrevisto)),
     monitorarProcesso(PID, ID).
@@ -124,15 +125,17 @@ cancelarNotificacao(ID) :-
     retract(idDoVerificador(ID, IDVerificador)),
     thread_signal(IDVerificador, thread_exit(_)),
     retract(notificacaoAgendada(PID, ID, _)),
-    format(string(Comando), 'kill ~w', [PID]),
-    shell(Comando).
+    format(string(Comando1), 'rm verificador~w.txt', [PID]),
+    shell(Comando1),
+    format(string(Comando2), 'kill ~w', [PID]),
+    shell(Comando2).
 
 
 adiarNotificacao(MaisSegundos, ID) :-
     notificacaoAgendada(_, ID, TempoPrevisto),
     obterTempoAtualEmSegundos(TempoAtual),
     TempoDecorrido is TempoPrevisto - TempoAtual,
-    write('Quanto ta faltando pra finalizar o pedido '), write(ID), write('= '), write(TempoDecorrido), nl,
+%    write('Quanto ta faltando pra finalizar o pedido '), write(ID), write('= '), write(TempoDecorrido), nl,
     NovosSegundos is TempoDecorrido + MaisSegundos,
     cancelarNotificacao(ID),
     agendarNotificacao(NovosSegundos, ID), !.
@@ -172,6 +175,8 @@ repetirVerificacao(PID, ID) :-
         -> sleep(1),
             fail
         ;  !,
+            format(string(Comando), 'rm verificador~w.txt', [PID]),
+            shell(Comando),
             fila_prioridades(Fila),
             buscarPedidoPeloID(Fila, ID, Preco, Prioridade, Itens, Espera),
             assertz(pedidoPronto(ID,Preco,Prioridade,Itens,Espera)),
@@ -183,11 +188,12 @@ repetirVerificacao(PID, ID) :-
     ).
 
 processoEstaEmExecucao(PID) :-
-    format(string(Comando), 'if ps -p ~w > /dev/null; then echo "true" > verificador.txt; else echo "false" > verificador.txt; fi', [PID]),
+    format(string(Comando), 'if ps -p ~w > /dev/null; then echo "true" > verificador~w.txt; else echo "false" > verificador~w.txt; fi', [PID, PID, PID]),
     shell(Comando),
-    sleep(0.1),
-    lerVerificador(Check),
-    Check == "true".
+    sleep(0.2),
+    lerVerificador(Check, PID),
+    Check == "true",
+    shell(Comando).
     
     
 /* =========================== REGRAS USADAS PELO CLIENTE ========================== */
@@ -198,7 +204,7 @@ cardapio :- findall(itemCardapio(Numero, Preco, _, Descricao), itemCardapio(Nume
 
 mostrarCardapio([]) :-  write('\u001b[45m =======================================================\u001b[m'), nl, !.
 mostrarCardapio([itemCardapio(Numero, Preco, _, Descricao) | Resto]) :- 
-    format('\u001b[44m~w~2|. ~|~w~46+R$~2f\u001b[m', [Numero, Descricao, Preco]), nl,
+    format('\u001b[44m~w~2|. ~|~w~47+R$~2f\u001b[m', [Numero, Descricao, Preco]), nl,
     mostrarCardapio(Resto).
 
                                                                 
@@ -227,11 +233,11 @@ fazerPedido(PTotal, ID) :-
     write('Numero do Item Inválido.'), !).
     
 
-fazerPedido(_, _) :- write('Temos muitos pedidos em andamento, volte mais tarde...').                            
+fazerPedido(_, _) :- write('\u001b[41mTemos muitos pedidos em andamento, volte mais tarde...\u001b[m').                            
 
 
 verStatusDoPedido(ID) :- pedidoPronto(ID, Preco, _, _, _),
-                         format('O Pedido ~w já está pronto. O valor total deu R$~2f', [ID, Preco]), !.
+                         format('O Pedido ~w já está pronto. O valor total deu R$~w', [ID, Preco]), !.
 
 
 verStatusDoPedido(ID) :- fila_prioridades(Fila),
@@ -242,8 +248,11 @@ verStatusDoPedido(ID) :- fila_prioridades(Fila),
 verStatusDoPedido(_) :- write('Pedido Inexistente').
 
 cancelarPedido(ID) :- cancelarNotificacao(ID),
-                      remover_pedido(ID),
-                      write('Pedido cancelado com sucesso!') .
+                      remover_pedido(ID).
 
-pegarPedido(ID) :- retract(pedidoPronto(ID, _, _, _, _)),
-                   write('Está aqui o seu pedido, volte sempre :)'). 
+pegarPedido(ID) :- pedidoPago(ID),
+                   retract(pedidoPronto(ID, _, _, _, _)),
+                   retract(pedidoPago(ID)),
+                   write('Aqui está o seu pedido \u2615, volte sempre :)'), !.
+
+pegarPedido(_) :- write('\u001b[41mID do pedido inválido\u001b[m'), !.

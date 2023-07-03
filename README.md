@@ -1,10 +1,7 @@
 # IntelligentAgent-FastCoffe-Prolog-PROJECT
 
-<div align="center">
-  <a href="https://github.com/oJordany/estanteVirtual/">
-
-  <a/>
-  <h1>Fast Coffe</h1>
+<div align="left">
+  <h1>☕ Fast Coffe</h1>
 
 <h2 style="text-align: left;">&#x2714 lista de conteúdos</h2>
 <ul type="pointer">
@@ -106,38 +103,41 @@ Fato/Regra | Descrição
 
 Fato/Regra | Descrição
 :---------:|:---------
-`fila\_prioridades/1` | Fato dinâmico que armazena a fila de prioridades.</br>**1º termo**: fila de prioridades em forma de lista</br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`fila_prioridades/1` | Fato dinâmico que armazena a fila de prioridades.</br>**1º termo**: fila de prioridades em forma de lista</br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
 `cont/1` | Fato dinâmico que armazena o contador de pedidos para adicionar a ordem em que cada pedido foi inserido na fila.</br>**1º termo**: quantidade de pedidos na fila</br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`adicionar\_pedido/5` | Regra que adiciona um pedido à fila de prioridades.</br>**1º termo**: ID do pedido</br>**2º termo**: Preço total do pedido</br>**3º termo**: Prioridade do pedido</br>**4º termo**: Descrição do pedido</br>**5º termo**: Tempo de espera do pedido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`remover\_pedido/1` | Regra que remove um pedido da fila de prioridades.</br>**1º termo**: ID do pedido </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`alterar\_prioridade/2` | Regra que altera a prioridade de um pedido na fila de prioridades e reordena a fila.</br>**1º termo**: ID do pedido que se deseja mudar a prioridade</br>**2º termo**: Nova prioridade que se deseja colocar no pedido</br> **`⚙️ REGRA AUXILIAR`**</br> **`📝GERÊNCIA DE PEDIDOS`**
-`inserir\_pedido/3` | Regra auxiliar da adicionar\_pedido/5 que insere um pedido na fila de prioridades.</br>**1º termo**: Fila de prioridades na forma de lista</br>**2º termo**: pedido, na forma de termo complexo: pedido(ID, Preco, Prioridade, Ordem de Inserção, Descrição, Espera)</br>**3º termo**: Nova fila que será dada como resposta, com o novo pedido já inserido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`remover\_pedido/3` | Regra auxiliar da remover\_pedido/1 que remove um pedido da fila de prioridades.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido que se deseja remover</br>**3º termo**: Nova fila obtida como resposta, com o pedido já removido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`alterar\_prioridade/4` | Regra auxiliar da alterar\_prioridade/2 que altera a prioridade de um pedido na fila de prioridades.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido que se deseja alterar a prioridade</br>**3º termo**: Nova prioridade que se deseja colocar no pedido</br>**4º termo**: Nova fila resultante da alteração da prioridade do pedido na lista e da reordenação dele nela</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`compara\_prioridades/2` | Regra que compara as prioridades entre dois pedidos. Caso seja um true e um false, ele considera o true com maior prioridade. Caso seja dois true ou dois false, ele considera quem entrou primeiro, considerando que cada pedido tem um contador de ordem de chegada.</br>**1º termo**: Pedido 1</br>**2º termo**: Pedido 2</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`reordenar\_fila\_prioridades/2` | Regra que reordena a fila de prioridades com base nas novas prioridades, quando se usa a regra alterar\_prioridade/2.</br>**1º termo**: Fila de prioridades</br>**2º termo**: Fila reordenada obtida como resposta</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`pegar\_ultimo\_false\_da\_fila/1` | Regra que obtém o ID do último pedido sem prioridade na fila.</br>**1º termo**: ID do pedido obtido como resposta</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
-`pegar\_ultimo\_false\_da\_fila/2` | Sobrecarga da regra pegar\_ultimo\_false\_da\_fila/1 com o ID do pedido como argumento inicial.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido obtido como resposta </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`adicionar_pedido/5` | Regra que adiciona um pedido à fila de prioridades.</br>**1º termo**: ID do pedido</br>**2º termo**: Preço total do pedido</br>**3º termo**: Prioridade do pedido</br>**4º termo**: Descrição do pedido</br>**5º termo**: Tempo de espera do pedido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`remover_pedido/1` | Regra que remove um pedido da fila de prioridades.</br>**1º termo**: ID do pedido </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`alterar_prioridade/2` | Regra que altera a prioridade de um pedido na fila de prioridades e reordena a fila.</br>**1º termo**: ID do pedido que se deseja mudar a prioridade</br>**2º termo**: Nova prioridade que se deseja colocar no pedido</br> **`⚙️ REGRA AUXILIAR`**</br> **`📝GERÊNCIA DE PEDIDOS`**
+`inserir_pedido/3` | Regra auxiliar da adicionar_pedido/5 que insere um pedido na fila de prioridades.</br>**1º termo**: Fila de prioridades na forma de lista</br>**2º termo**: pedido, na forma de termo complexo: pedido(ID, Preco, Prioridade, Ordem de Inserção, Descrição, Espera)</br>**3º termo**: Nova fila que será dada como resposta, com o novo pedido já inserido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`remover_pedido/3` | Regra auxiliar da remover_pedido/1 que remove um pedido da fila de prioridades.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido que se deseja remover</br>**3º termo**: Nova fila obtida como resposta, com o pedido já removido</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`alterar_prioridade/4` | Regra auxiliar da alterar_prioridade/2 que altera a prioridade de um pedido na fila de prioridades.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido que se deseja alterar a prioridade</br>**3º termo**: Nova prioridade que se deseja colocar no pedido</br>**4º termo**: Nova fila resultante da alteração da prioridade do pedido na lista e da reordenação dele nela</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`compara_prioridades/2` | Regra que compara as prioridades entre dois pedidos. Caso seja um true e um false, ele considera o true com maior prioridade. Caso seja dois true ou dois false, ele considera quem entrou primeiro, considerando que cada pedido tem um contador de ordem de chegada.</br>**1º termo**: Pedido 1</br>**2º termo**: Pedido 2</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`reordenar_fila_prioridades/2` | Regra que reordena a fila de prioridades com base nas novas prioridades, quando se usa a regra alterar_prioridade/2.</br>**1º termo**: Fila de prioridades</br>**2º termo**: Fila reordenada obtida como resposta</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`pegar_ultimo_false_da_fila/1` | Regra que obtém o ID do último pedido sem prioridade na fila.</br>**1º termo**: ID do pedido obtido como resposta</br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
+`pegar_ultimo_false_da_fila/2` | Sobrecarga da regra pegar_ultimo_false_da_fila/1 com o ID do pedido como argumento inicial.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido obtido como resposta </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
 </ul>
 
 <h2 id="FluxoDePagamentoExemplosDeUso" > Exemplos de Uso </h2>
-Exemplo de uso das regras executadas pelo agente ou cliente.
 
-=================================================
 - `inicializeCaixa/0`
+
 ~~~prolog
 ?- inicializeCaixa.
 ~~~
+
 ~~~
 Caixa inicializado com sucesso!
 true.
 ~~~
-- A base de conhecimento recebe dinâmicamente os fatos receita_diaria(DataDoSistema,0) e despesa_diaria(DataDoSistema,0). 
+- A base de conhecimento recebe dinamicamente os fatos receita_diaria(DataDoSistema,0) e despesa_diaria(DataDoSistema,0). 
+
+---
 
 - `cardapio/0`
 ~~~prolog
 ?- cardapio.
 ~~~
+
 ~~~
  =================== ☕ CARDAPIO ☕ ====================
 1. Americano                                      R$3.00
