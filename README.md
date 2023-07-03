@@ -308,6 +308,74 @@ Fato/Regra | Descrição
 ` cozinhar/2 `| Regra responsável por cozinhar por item no cardapio. </br> **1º termo**: id do cardapio.</br> **2º termo**: quantidade que foi solicitada desse mesmo produto.</br>**`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
 ` cozinharPedido/2 `| Regra responsável por cozinhar todo o pedido, utiliza a regra **cozinhar** como auxiliar. </br> **1º termo**: lista de listas [Id, Qtd].</br>**`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
 
+<h2 id="Cozinha" > Exemplos de Uso </h2>
+
+- `inicializeCaixa/0`
+~~~prolog
+?- inicializeCaixa.
+~~~
+- Acrescenta na base de conhecimento os fatos dinâmicos receita_diaria(Data,0) e despesa_diaria(Data,0) com a Data do dia e o valor zero.
+
+- `comprarIngrediente/2`
+~~~prolog    
+?- comprarIngrediente('Chocolate',3).
+~~~
+~~~prolog
+Compra realizada com sucesso!
+true.
+~~~~
+
+- `usarIngrediente/2`
+~~~prolog    
+?- usarIngrediente('Chocolate',2).
+~~~
+~~~prolog
+Ingrediente usado com sucesso!
+true 
+~~~~
+
+- `addReceita/2`
+~~~prolog    
+?- addReceita('Cafe simples',['Cafe','Acucar']).
+~~~
+~~~prolog
+Receita adicionada com sucesso!
+true.
+~~~~
+
+- `addItemCardapio/4`
+~~~prolog    
+?- addItemCardapio(1,2,2,'Cafe simples').
+~~~
+~~~prolog
+Item adicionado com sucesso no cardapio!
+true.
+~~~~
+
+- `cozinhar/2`
+~~~prolog    
+?- cozinhar(1,3).
+~~~
+~~~prolog
+Compra realizada com sucesso!
+Ingrediente usado com sucesso!
+Compra realizada com sucesso!
+Ingrediente usado com sucesso!
+true.
+~~~~
+
+- `cozinharPedido/1`
+~~~prolog    
+?- cozinharPedido([[1,2]]).
+~~~
+~~~prolog
+Compra realizada com sucesso!
+Ingrediente usado com sucesso!
+Compra realizada com sucesso!
+Ingrediente usado com sucesso!
+true.
+~~~~
+
   <li><h3><a name="controleFinanceiro.pl">📊 controleFinanceiro.pl</a></h3></li>
  O arquivo controleFinanceiro.pl desempenha um papel crucial no gerenciamento das finanças do Fast Coffe, fornecendo um sistema para registrar e analisar as receitas, despesas, lucros e prejuízos diários. Ele contém as seguintes regras e funcionalidades:
 
