@@ -292,8 +292,21 @@ Pega as informações do cardápio e calcula o preço total. Assim, é imprimido
 
 
   <li><h3><a name="cozinha.pl">👩‍🍳 cozinha.pl</a></h3></li>
-  
+  O presente módulo é responsável por gerenciar os fatos dinâmicos que dizem respeito à cozinha, tais como item da loja e item do cardapio, entre outros. Além disso, também é responsável pela gerência de consumo e preparo do alimentos, assim como gerencia de itens no cardápio e estoque de ingredientes.
 
+Fato/Regra | Descrição
+:---------:|:----------
+` itemLoja/2 `| Fato que descreve um item da loja de ingredientes, contendo o nome do ingrediente e o preço. </br> **1º termo**: nome do ingrediente.</br> **2º termo**: preço.</br>**`⚙️ FATO AUXILIAR DINÂMICO`** <br> **`👩‍🍳 Cozinha`**
+` estoque/2 `| Fato que descreve o estoque da cafeteria, contendo o nome do ingrediente e a quantidade. </br> **1º termo**: nome do ingrediente. </br> **2º termo**: quantidade.</br>**`⚙️ FATO AUXILIAR DINÂMICO`** <br> **`👩‍🍳 Cozinha`**
+` itemCardapio/4 `| Fato que descreve os itens do cardapio, contendo o id, preço, tempo de preparo e nome do produto da cafeteria. </br> **1º termo**: id.</br> **2º termo**: preço.</br> **3º termo**: tempo de preparo.</br> **4º termo**: nome do produto da cafeteria.</br>**`⚙️ FATO AUXILIAR DINÂMICO`** <br> **`👩‍🍳 Cozinha`**
+` livroReceitas/2 `| Fato que descreve as receitas disponíveis, contendo o nome e ingredientes da receita. </br> **1º termo**: nome.</br> **2º termo**: lista de ingredientes.</br> **`⚙️ FATO AUXILIAR DINÂMICO`** <br> **`👩‍🍳 Cozinha`**
+` infoCozinha/0 `| Regra que descreve informações importantes de estados do livro de receitas, estoque e itens da loja. </br> **`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
+` comprarIngrediente/2 `| Regra solicita a compra de ingredientes na loja, utiliza a regra **registreDespesa** para registrar o log da compra realizada.</br> **1º termo**: nome do ingrediente.</br> **2º termo**: quantidade de ingredientes que deseja comprar.</br> **`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
+` usarIngrediente/2 `| Essa regra faz a "utilização" de um determinado ingrediente, ou seja, remove esse ingrediente do estoque, caso não tenham ingrediente necessários também faz a compra para assim utilizar. </br> **1º termo**: nome do ingrediente.</br> **2º termo**: quantidade de ingredientes que deseja utilizar.</br>**`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
+` addReceita/2 `| Regra adiciona receita no livro de receitas. </br> **1º termo**: nome da receita.</br> **2º termo**: lista de ingredientes da receita.</br>**`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
+` addItemCardapio/4 `| Regra adiciona item no cardapio a partir das receitas disponíveis no livro de receitas. </br> **1º termo**: id </br> **2º termo**: preco.</br> **3º termo**: tempo de preparo.</br> **4º termo**: nome do produto.</br>**`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
+` cozinhar/2 `| Regra responsável por cozinhar por item no cardapio. </br> **1º termo**: id do cardapio.</br> **2º termo**: quantidade que foi solicitada desse mesmo produto.</br>**`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
+` cozinharPedido/2 `| Regra responsável por cozinhar todo o pedido, utiliza a regra **cozinhar** como auxiliar. </br> **1º termo**: lista de listas [Id, Qtd].</br>**`⚙️ REGRA`** <br> **`👩‍🍳 Cozinha`**
 
   <li><h3><a name="controleFinanceiro.pl">📊 controleFinanceiro.pl</a></h3></li>
  O arquivo controleFinanceiro.pl desempenha um papel crucial no gerenciamento das finanças do Fast Coffe, fornecendo um sistema para registrar e analisar as receitas, despesas, lucros e prejuízos diários. Ele contém as seguintes regras e funcionalidades:
