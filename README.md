@@ -5,29 +5,30 @@
 
 <h2 style="text-align: left;">&#x2714 lista de conteúdos</h2>
 <ul type="pointer">
-  <li style="text-align: left;"><a href="#DefinicaoAmbiente">Objetivos e definição do ambiente</a></li>
+  <li style="text-align: left;"><a href="#definicaoAmbiente">Objetivos e definição do ambiente</a></li>
 
   <li style="text-align: left;"><a href="#tarefas">Definição das tarefas</a></li>
   <li style="text-align: left;"><a href="#especificacaoConhecimento">Especificação do conhecimento</a></li>
   <ul>
-    <li style="text-align: left;"><a href="OrderFlowController.pl"> OrderFlowController.pl</a></li>
+    <li style="text-align: left;"><a href="#orderFlowController"> OrderFlowController.pl</a></li>
      <ul>
-     <li style="text-align: left;"><a href="filaPrioridades.pl"> filaPrioridades.pl</a></li>
+     <li style="text-align: left;"><a href="#filaPrioridades"> filaPrioridades.pl</a></li>
+     <li><a href="#orderFlowControllerExemplosDeUso"> Exemplos de Uso</a></li>
      </ul>
     <li style="text-align: left;"><a href="#fluxoDePagamento"> fluxoDePagamento.pl</a>
       <ul>
         <li><a href="#FluxoDePagamentoExemplosDeUso"> Exemplos de Uso</a></li>
       </ul>
     </li>
-    <li style="text-align: left;"><a href="cozinha.pl">cozinha.pl</a></li>
-    <li style="text-align: left;"><a href="controleFinanceiro.pl"> controleFinanceiro.pl</a></li>
+    <li style="text-align: left;"><a href="#cozinha">cozinha.pl</a></li>
+    <li style="text-align: left;"><a href="#controleFinanceiro"> controleFinanceiro.pl</a></li>
   </ul>
   <li style="text-align: left;"><a href="#authors">Autores</a></li>
 </ul>
 
 <h1></h1>
 
-<h2><a name="DefinicaoAmbiente">☕Objetivos e definição do ambiente</a></h2>
+<h2><a id="definicaoAmbiente">☕Objetivos e definição do ambiente</a></h2>
 <p>➥ 
 O objetivo do Agente Explorador em Prolog para o Fast Coffe é fornecer um sistema inteligente de gerenciamento para um estabelecimento de fast food especializado em café. O agente será responsável por coordenar e automatizar diversas tarefas relacionadas ao fluxo de pedidos, prioridades de atendimento, processamento de pagamentos, gerenciamento da cozinha e controle financeiro.
 
@@ -39,7 +40,7 @@ O agente inteligente atuará em um ambiente dinâmico do Fast Coffe, que consist
 
 <h1></h1>
 
-<h2><a name="tarefas">📋 Definição das tarefas</a></h2>
+<h2><a id="tarefas">📋 Definição das tarefas</a></h2>
 <p>➥ O ambiente do Fast Coffe possui diferentes áreas e subdomínios que o agente explorador irá gerenciar:
 
 1. **OrderFlowController.pl**: O arquivo OrderFlowController.pl é responsável por controlar o fluxo dos pedidos no Fast Coffe. Ele gerencia o recebimento dos pedidos, a fila de espera e o direcionamento para a cozinha ou atendimento, dependendo das preferências dos clientes.
@@ -54,9 +55,9 @@ Essa documentação fornece uma visão geral do objetivo do agente explorador em
 
 <h1></h1>
 
-<h2 style="text-align: center;"><a name="especificacaoConhecimento">🗃️ Especificação do conhecimento</a></h2>
+<h2 style="text-align: center;"><a id="especificacaoConhecimento">🗃️ Especificação do conhecimento</a></h2>
 <ul style="text-align: left;" type="none">
-  <li><h3><a name="OrderFlowController.pl">📝 OrderFlowController.pl</a></h3></li>
+  <li><h3><a id="orderFlowController">📝 OrderFlowController.pl</a></h3></li>
   
 
 Esse arquivo, basicamente, é o controlador de fluxo de pedidos. Ele realiza atividades de gerência dos pedidos através de uma fila de prioridades, sendo que tais pedidos possuem uma prioridade, podendo ser true ou false. Nesse sentido, para que não ocorra um starvation de nenhum deles, são feitas mudanças na fila de prioridade após a finalização de cada 3 pedidos com prioridade true, colocando sempre o último da fila, cuja prioridade é false, na primeira posição, adiando os demais pedidos que estiverem atrás dele.
@@ -97,7 +98,7 @@ Fato/Regra | Descrição
 `idDoVerificador/2` | Fato dinâmico que armazena o ID da thread que fica monitorando quando o processo de emissão de notificação agendada morre e o ID do pedido da notificação agendada para relacionar pedido e notificação.</br>**1º termo**: ID do pedido</br>**2º termo**: ID da thread </br>**` ⚙️ FATO AUXILIAR DINÂMICO`**</br>**` 🔔GERÊNCIA DE NOTIFICAÇÕES`**
 
 <ul>
-  <li><h3><a name="filaPrioridades.pl"> filaPrioridades.pl</a></h3></li>
+  <li><h3><a id="filaPrioridades"> filaPrioridades.pl</a></h3></li>
 
   Esse arquivo contém, basicamente, a fila de prioridades, bem como as suas funcionalidades, que foram construídas a partir de regras específicas, como: adicionar um pedido na fila, remover e alterar a prioridade. Além disso, outras regras auxiliares foram construídas, como a de comparar a prioridade de dois pedidos, para inseri-los na posição certa na fila, a de reordenar os itens da fila com base na nova prioridade adicionada a um outro pedido e, por fim, a de obter o último pedido sem prioridade da fila, a fim de inseri-lo no início da fila, para realizar a gerência de starvation com êxito.
 
@@ -117,7 +118,7 @@ Fato/Regra | Descrição
 `pegar_ultimo_false_da_fila/2` | Sobrecarga da regra pegar_ultimo_false_da_fila/1 com o ID do pedido como argumento inicial.</br>**1º termo**: Fila de prioridades em forma de lista</br>**2º termo**: ID do pedido obtido como resposta </br> **`⚙️ REGRA AUXILIAR`**</br>**` 📝GERÊNCIA DE PEDIDOS`**
 </ul>
 
-<h2 id="FluxoDePagamentoExemplosDeUso" > Exemplos de Uso </h2>
+<h2 id="orderFlowControllerExemplosDeUso" > Exemplos de Uso </h2>
 
 - `inicializeCaixa/0`
 
@@ -291,7 +292,7 @@ Pega as informações do cardápio e calcula o preço total. Assim, é imprimido
 
 
 
-  <li><h3><a name="cozinha.pl">👩‍🍳 cozinha.pl</a></h3></li>
+  <li><h3><a id="cozinha">👩‍🍳 cozinha.pl</a></h3></li>
   O presente módulo é responsável por gerenciar os fatos dinâmicos que dizem respeito à cozinha, tais como item da loja e item do cardapio, entre outros. Além disso, também é responsável pela gerência de consumo e preparo do alimentos, assim como gerencia de itens no cardápio e estoque de ingredientes.
 
 Fato/Regra | Descrição
@@ -406,7 +407,7 @@ itemLoja('Ortela', 2).
 true.
 ~~~~
 
-  <li><h3><a name="controleFinanceiro.pl">📊 controleFinanceiro.pl</a></h3></li>
+  <li><h3><a id="controleFinanceiro">📊 controleFinanceiro.pl</a></h3></li>
  O arquivo controleFinanceiro.pl desempenha um papel crucial no gerenciamento das finanças do Fast Coffe, fornecendo um sistema para registrar e analisar as receitas, despesas, lucros e prejuízos diários. Ele contém as seguintes regras e funcionalidades:
 
 Fato/Regra | Descrição
@@ -531,7 +532,7 @@ true.
 ~~~
 
 
-<h2 style="text-align: center;"><a name="authors">&#x1F465 Autores</a></h2>
+<h2 style="text-align: center;"><a id="authors">&#x1F465 Autores</a></h2>
 
   <li style="text-align: left;"><a href="https://github.com/Eemiaa">👤 Aimeê Miranda Ribeiro</a></li>
   <li style="text-align: left;"><a href="https://github.com/oJordany">👤 Luiz Jordany de Sousa Silva</a></li>
