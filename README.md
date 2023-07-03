@@ -29,8 +29,7 @@
 <h1></h1>
 
 <h2><a id="definicaoAmbiente">☕Objetivos e definição do ambiente</a></h2>
-<p>➥ 
-O objetivo do Agente Explorador em Prolog para o Fast Coffe é fornecer um sistema inteligente de gerenciamento para um estabelecimento de fast food especializado em café. O agente será responsável por coordenar e automatizar diversas tarefas relacionadas ao fluxo de pedidos, prioridades de atendimento, processamento de pagamentos, gerenciamento da cozinha e controle financeiro.
+<p>➥ O objetivo do Agente Explorador em Prolog para o Fast Coffe é fornecer um sistema inteligente de gerenciamento para um estabelecimento de fast food especializado em café. O agente será responsável por coordenar e automatizar diversas tarefas relacionadas ao fluxo de pedidos, prioridades de atendimento, processamento de pagamentos, gerenciamento da cozinha e controle financeiro.
 
 **Contextualização do Ambiente de Atuação**
 
