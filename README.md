@@ -376,6 +376,36 @@ Ingrediente usado com sucesso!
 true.
 ~~~~
 
+- `infoCozinha/0`
+~~~prolog    
+?- infoCozinha.
+~~~
+~~~prolog
+ Livro de Receitas:
+:- dynamic livroReceitas/2.
+
+livroReceitas('Cafe simples', ['Cafe', 'Acucar']).
+
+ Estoque:
+:- dynamic estoque/2.
+
+estoque('Chocolate', 1).
+estoque('Cafe', 0).
+estoque('Acucar', 0).
+
+ Itens da Loja:
+:- dynamic itemLoja/2.
+
+itemLoja('Acucar', 1).
+itemLoja('Cafe', 1).
+itemLoja('Leite', 1).
+itemLoja('Canela', 2).
+itemLoja('Chocolate', 2).
+itemLoja('Ortela', 2).
+
+true.
+~~~~
+
   <li><h3><a name="controleFinanceiro.pl">📊 controleFinanceiro.pl</a></h3></li>
  O arquivo controleFinanceiro.pl desempenha um papel crucial no gerenciamento das finanças do Fast Coffe, fornecendo um sistema para registrar e analisar as receitas, despesas, lucros e prejuízos diários. Ele contém as seguintes regras e funcionalidades:
 
